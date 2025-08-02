@@ -33,6 +33,25 @@ def extract_data_with_docling(input_data_path):
 
         for table_ix, table in enumerate(result.document.tables):
             table_df: pd.DataFrame = table.export_to_dataframe()
+
+            # --- FIX for Duplicate Columns ---
+            # Check if the dataframe has duplicate column names
+            if table_df.columns.has_duplicates:
+                new_columns = []
+                counts = {}
+                for col in table_df.columns:
+                    # Ensure column name is a string
+                    col_name = str(col)
+                    if col_name in counts:
+                        counts[col_name] += 1
+                        # Append a suffix to make it unique
+                        new_columns.append(f"{col_name}_{counts[col_name]}")
+                    else:
+                        counts[col_name] = 0
+                        new_columns.append(col_name)
+                table_df.columns = new_columns
+            # --- END FIX ---
+
             # Clean up the dataframe to ensure it's just text
             table_df = table_df.fillna('').astype(str)
             table_content_string = ' '.join([' '.join(row) for row in table_df.values])
