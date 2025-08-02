@@ -1,0 +1,11 @@
+# Virtual Environment
+venv/
+
+# Python cache
+__pycache__/
+
+# OS-specific files
+.DS_Store
+
+# Streamlit secrets file (good practice)
+.streamlit/secrets.toml
